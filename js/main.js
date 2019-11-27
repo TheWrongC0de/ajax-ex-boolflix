@@ -51,7 +51,7 @@ function callAjax(){
 
               var globalFilm  = {
                  titolo: elementi.title,
-                 imglink: 'https://image.tmdb.org/t/p/w500' + elementi.poster_path,
+                 imglink: createPoster(elem.poster_path),
                  titoloOriginale: elementi.original_title,
                  lingua: elementi.original_language,
                  voto: Math.ceil(elementi.vote_average),
@@ -119,3 +119,80 @@ function creazioneBandiera(flag){
    }
    return bandieraimg;
 };
+
+//genero i poster
+function createPoster(posterPath){
+   var poster = 'https://image.tmdb.org/t/p/w500';
+
+   if (posterPath == null){
+      poster = "https://fontmeme.com/permalink/191126/4afe42c72da796daf5f2206c7126a97a.png"
+   }else{
+      poster += posterPath
+   }
+
+   return poster;
+}
+
+//funzione  per la chiamate delle serie tv
+function callAjaxSeries() {
+
+   var userInput = $("#my_input").val();
+   console.log("stai cercando " + userInput)
+
+   $.ajax({
+      url: "https://api.themoviedb.org/3/search/tv",
+      method: "GET",
+      data: {
+         api_key: "86ad7638c6e9361746024a7df74fcc2a",
+         query: userInput,
+         language: "it-IT"
+
+      },
+      success: function (data) {
+         console.log(data.results)
+         var series = data.results;
+         var target = $(".blocco-serie");
+         printFilmSeries(series,target,false)
+         //ripulisco l'input inserito dall'user
+         $("#my_input").val("")
+      },
+      error: function (richiesta, stato, errori) {
+         alert("E' avvenuto un errore. " + " " + richiesta + " " + stato + " " + errori);
+      }
+   })
+}
+
+//funzione per serie tv e film
+function printFilmSeries(film, printHere, isFilm){
+
+   for (var i = 0; i < film.length; i++) {
+      var elem = film[i];
+
+      var source = $(".global-film-series").text();
+
+      var template = Handlebars.compile(source);
+
+
+      if(isFilm == true){
+         var titolo = elem.title;
+         var titoloOriginale = elem.original_title;
+      }else{
+         var titolo = elem.name;
+         var titoloOriginale = elem.original_name
+      }
+
+      var globalFilm  = {
+         titolo: elementi.title,
+         imglink: createPoster(elem.poster_path),
+         titoloOriginale: elementi.original_title,
+         lingua: elementi.original_language,
+         voto: Math.ceil(elementi.vote_average),
+         flag: creazioneBandiera(elementi.original_language),
+         stella: creazioneStelle(Math.ceil(elementi.vote_average))
+      };
+      var html = template(globalFilm);
+      console.log(html);
+      printHere.append(html);
+   }
+
+}

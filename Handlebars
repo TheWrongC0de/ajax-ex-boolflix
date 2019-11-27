@@ -1,0 +1,21 @@
+//Prendere il template 
+var sorgenteHtml = $('#template').html();
+console.log('sorgente', sorgenteHtml)
+
+//Diciamo ad handlebars che template vogliamo utilizzare
+var template = Handlebars.compile(sorgenteHtml); 
+console.log('oggetto handlebars', template)
+
+//Passiamo i parametri che vogliamo mettere 
+var risultato = template({
+title: 'Questo è il titolo!',
+body: '<p>Valore in grassetto!</p>'
+});
+console.log('risultato', risultato)
+
+//Stampare il nostro risultato a schermo!
+$('.content').append(risultato);
+
+
+//.text() per mettere testo e basta => per handlebars è {{}}
+//.html() per mettere testo assieme ad html => per handlebars è {{{}}}
